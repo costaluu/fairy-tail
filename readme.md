@@ -13,6 +13,10 @@ A simple way to stream a tail command into the web.
 
 Fairy tail uses SSE (Server Sent Events) to stream all the data for the client (yes client, Fairy tail does not support multiple connections). You can serve as many files you want.
 
+# Source Code
+
+Fairy tail server is built on Golang and the client is built on React, the client can render up to 40k lines of lines.
+
 ## License
 
 [![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
