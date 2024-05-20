@@ -11,7 +11,7 @@ A simple way to stream a tail command into the web.
 
 # About
 
-Fairy tail uses SSE (Server Sent Events) to stream all the data for the client (yes client, Fairy tail does not support multiple connections). You can serve as many files you want.
+Fairy tail uses SSE (Server Sent Events) to stream all the data for the clients. You can serve as many files you want.
 
 # Source Code
 
