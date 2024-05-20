@@ -174,15 +174,15 @@ func main() {
 	if len(argsWithoutProg) == 0 {
 		fmt.Println("No arugments provided, use the 'help' command")
 	} else if argsWithoutProg[0] == "help" {
-		fmt.Println("Tails help")
+		fmt.Println("Fairy-Tail help")
 		fmt.Println("before running the serve command make sure that the html folder is in the same folder of this executable")
-		fmt.Println("only 1 connection to the server is allowed")
-		fmt.Println("the serve command is: server ./path/to/file/to/tail port both parameters are mandatory")
+		fmt.Println("make sure Fairy-Tail has the permissions")
+		fmt.Println("the serve command is: serve /path/to/file/to/tail port both parameters are mandatory")
 	} else if argsWithoutProg[0] == "commands" {
-		fmt.Println("Tails commands")
+		fmt.Println("Fairy-Tail commands")
 		fmt.Println("help: runs the help command.")
 		fmt.Println("commands: shows all commands.")
-		fmt.Println("about: tell more about tails.")
+		fmt.Println("about: tell more about Fairy-Tail.")
 		fmt.Println("serve ./path/to/file/to/tail port: serves a file in to the web")
 	} else if argsWithoutProg[0] == "serve" {
 		if len(argsWithoutProg) <= 2 {
@@ -208,9 +208,10 @@ func main() {
 			app(argsWithoutProg[1], port)
 	 	}
 	} else if argsWithoutProg[0] == "about" {
-		fmt.Println("Tails about")
-		fmt.Println("Tails is application that aims into serving a tail log to the web with no time")
-		fmt.Println("the connection is based on SSE (Server-Sent-Events) tails do not use websockets to make the connection.")
+		fmt.Println("Fairy-Tail about")
+		fmt.Println("Fairy-Tail is application that aims into serving a tail log to the web with no time")
+		fmt.Println("the connection is based on SSE (Server-Sent-Events) Fairy-Tail do not use websockets to make the connection.")
+		fmt.Println("Fairy-Tail was created by https://github.com/costaluu")
 	} else {
 		fmt.Println("Command not found try to use the help command")
 	}

@@ -15,7 +15,7 @@ Fairy tail uses SSE (Server Sent Events) to stream all the data for the clients.
 
 # Source Code
 
-Fairy tail server is built on Golang and the client is built on React, the client can render up to 40k lines of lines.
+Fairy tail server is built on Golang and the client is built on React, the client can render up to 40k lines.
 
 ## License
 

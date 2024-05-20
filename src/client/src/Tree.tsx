@@ -13,16 +13,20 @@ interface StringRegexAction {
 
 const TreeRules: StringRegexAction[] = [
     {
-        className: "",
-        regex: /\t/gim,
+        className: "text-blue-500",
+        regex: /((\d+[-|\/]\d+[-|\/]\d+\s\d\d?:\d\d?:\d\d?)|info)/gim,
     },
     {
-        className: "text-blue-500",
-        regex: /\d+[-|\/]\d+[-|\/]\d+\s\d\d?:\d\d?:\d\d?/gim,
+        className: "text-cyan-500",
+        regex: /notice/gim,
     },
     {
-        className: "text-blue-500",
-        regex: /info/gim,
+        className: "text-green-500",
+        regex: /running|sucess|starting|ok|completed?/gim,
+    },
+    {
+        className: "text-amber-500",
+        regex: /Notification/gim,
     },
     {
         className: "text-pink-500",
@@ -34,11 +38,7 @@ const TreeRules: StringRegexAction[] = [
     },
     {
         className: "text-red-500",
-        regex: /error/gim,
-    },
-    {
-        className: "text-red-500",
-        regex: /problem/gim,
+        regex: /error|fail|problem|issue/gim,
     },
     {
         className: "",
@@ -96,27 +96,15 @@ export const BuildRenderTree = (
         let strings = splitStringByRegex(text, TreeRules[i].regex);
 
         if (strings != null) {
-            if (i == 0) {
-                tree.push(
-                    ...BuildRenderTree(strings[0], searchTerm),
-                    {
-                        id: nanoid(),
-                        className: "",
-                        text: "@@TAB@@",
-                    },
-                    ...BuildRenderTree(strings[2], searchTerm)
-                );
-            } else {
-                tree.push(
-                    ...BuildRenderTree(strings[0], searchTerm),
-                    {
-                        id: nanoid(),
-                        className: TreeRules[i].className,
-                        text: strings[1],
-                    },
-                    ...BuildRenderTree(strings[2], searchTerm)
-                );
-            }
+            tree.push(
+                ...BuildRenderTree(strings[0], searchTerm),
+                {
+                    id: nanoid(),
+                    className: TreeRules[i].className,
+                    text: strings[1],
+                },
+                ...BuildRenderTree(strings[2], searchTerm)
+            );
 
             break;
         }

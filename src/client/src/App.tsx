@@ -13,9 +13,13 @@ const maxSize = 40000;
 
 export default function App() {
     const [search, setSearch] = useState<string>("");
-    const [debouncedSearch, setDebouncedSearch] = useDebounceValue(search, 500);
+    const [debouncedSearch, setDebouncedSearch] = useDebounceValue(
+        search,
+        1000
+    );
 
     const [buffer, setBuffer] = useState<Message[]>([]);
+    const [filteredBuffer, setFilteredBuffer] = useState<Message[]>([]);
     const [renderId, setRenderId] = useState<string>(nanoid());
 
     const { width: viewPortWidth } = useWindowSize();
@@ -28,6 +32,16 @@ export default function App() {
         const url = new URL(window.location.href);
         url.searchParams.set("search", debouncedSearch);
         history.pushState({}, "", url);
+
+        if (debouncedSearch != "") {
+            setFilteredBuffer(
+                buffer.filter((message) =>
+                    message.message.includes(debouncedSearch)
+                )
+            );
+        } else {
+            setFilteredBuffer(buffer);
+        }
     }, [debouncedSearch]);
 
     useEffect(() => {
@@ -80,13 +94,28 @@ export default function App() {
         <>
             <Toaster position="bottom-center" theme="dark" />
             <div className="w-screen h-screen p-1 flex flex-col gap-1 bg-zinc-900">
-                <div className="flex flex-row w-full items-center gap-2 py-2">
+                <div className="relative flex flex-row w-full items-center gap-2 py-2">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-gray-300 absolute inset-y-1/2 -translate-y-1/2 left-1 w-4 h-4"
+                    >
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
                     <input
                         type="text"
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
-                        className="p-1 m-0 text-base leading-tight rounded-md flex-grow min-w-0 bg-zinc-800 border border-zinc-500 text-gray-300 shadow-md ring-0 outline-0"
-                        placeholder="Search in logs..."
+                        className="p-1 px-6 m-0 text-base leading-tight rounded-md flex-grow min-w-0 bg-zinc-800 border border-zinc-500 text-gray-300 shadow-md ring-0 outline-0"
+                        placeholder="Search..."
                     />
                     <button
                         type="button"
@@ -119,63 +148,47 @@ export default function App() {
                 </div>
                 <div
                     key={renderId}
-                    className="w-full flex flex-col text-white flex-grow bg-zinc-800 font-['JetBrains'] overflow-y-auto scrollbar-none rounded-md"
+                    className="w-full flex flex-col text-white flex-grow bg-zinc-800 font-['JetBrains'] overflow-auto scrollbar-none rounded-md"
                 >
                     <AutoSizer>
                         {({ height, width }) => (
                             <VariableSizeList
                                 width={width}
                                 height={height}
-                                itemSize={(index) => {
-                                    const fontSize = 14;
-                                    const newWidth = width;
-
-                                    const rawStringSizeTotalWidth =
-                                        fontSize * buffer[index].message.length;
-
-                                    const height = Math.floor(
-                                        (rawStringSizeTotalWidth * 1.8) /
-                                            newWidth
-                                    );
-
-                                    return Math.max(20, height * fontSize);
-                                }}
-                                itemCount={buffer.length}
-                                itemData={buffer}
+                                itemSize={() => 20}
+                                itemCount={filteredBuffer.length}
+                                itemData={filteredBuffer}
                                 itemKey={(index, data) => data[index].id}
                                 className="overflow-y-auto scrollbar-thin"
                             >
                                 {({ index, style }) => {
                                     const tree = BuildRenderTree(
-                                        buffer[index].message,
+                                        filteredBuffer[index].message,
                                         debouncedSearch
                                     );
 
                                     return (
                                         <div
+                                            key={filteredBuffer[index].id}
                                             style={{
                                                 ...style,
                                             }}
                                             className="flex flex-row text-sm items-center w-full h-min px-2 whitespace-pre-wrap"
                                         >
                                             {tree.map((item) => {
-                                                if (item.text == "@@TAB@@") {
-                                                    return (
-                                                        <>
-                                                            &nbsp;&nbsp;&nbsp;&nbsp;
-                                                        </>
-                                                    );
-                                                }
-
                                                 return (
                                                     <>
                                                         <span
                                                             key={item.id}
                                                             className={
-                                                                item.className
+                                                                item.className +
+                                                                " break-all whitespace-nowrap"
                                                             }
                                                         >
-                                                            {item.text}
+                                                            {item.text.replaceAll(
+                                                                " ",
+                                                                "\u00a0"
+                                                            )}
                                                         </span>
                                                     </>
                                                 );
