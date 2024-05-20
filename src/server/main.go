@@ -119,29 +119,27 @@ func app(path string, port int) {
 	broker := NewServer()
 
 	go func() {
-		for {
-			cmd := exec.Command("tail", "-f", path)
+		cmd := exec.Command("tail", "-f", path)
 
-			stdout, err := cmd.StdoutPipe()
+		stdout, err := cmd.StdoutPipe()
 
-			if err != nil {
-				fmt.Println(err);
-				panic(err)
-			}
+		if err != nil {
+			fmt.Println(err);
+			panic(err)
+		}
 
-			err = cmd.Start()
+		err = cmd.Start()
 
-			if err != nil {
-				panic(err)
-			}
+		if err != nil {
+			panic(err)
+		}
 
-			scanner := bufio.NewScanner(stdout)
+		scanner := bufio.NewScanner(stdout)
 
-			fmt.Println("Stream created!")
+		fmt.Println("Stream created!")
 
-			for scanner.Scan() {
-				broker.Notifier <- []byte(scanner.Text())
-			}
+		for scanner.Scan() {
+			broker.Notifier <- []byte(scanner.Text())
 		}
 	}()
 
@@ -156,10 +154,12 @@ func app(path string, port int) {
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         http.ServeFile(w, r, "./html/index.html")
     })
+	
+	http.HandleFunc("/sse", broker.ServeHTTP);
 
 	fmt.Println("Stream created! Server on!")
 
-	log.Fatal("HTTP server error: ", http.ListenAndServe(fmt.Sprintf(":%d", port), broker))
+	log.Fatal("HTTP server error: ", http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }
 
 func checkFileExists(filePath string) bool {
