@@ -145,6 +145,20 @@ func app(path string, port int) {
 		}
 	}()
 
+	http.HandleFunc("/html/styles.css", func(w http.ResponseWriter, r *http.Request) {
+        http.ServeFile(w, r, "./html/styles.css")
+    })
+
+    http.HandleFunc("/html/app.js", func(w http.ResponseWriter, r *http.Request) {
+        http.ServeFile(w, r, "./html/app.js")
+    })
+
+    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        http.ServeFile(w, r, "./html/index.html")
+    })
+
+	fmt.Println("Stream created! Server on!")
+
 	log.Fatal("HTTP server error: ", http.ListenAndServe(fmt.Sprintf(":%d", port), broker))
 }
 
